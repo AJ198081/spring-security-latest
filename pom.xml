@@ -10,6 +10,9 @@
     </parent>
 
     <packaging>pom</packaging>
+    <modules>
+        <module>ch-02</module>
+    </modules>
 
 
     <groupId>dev.aj</groupId>
