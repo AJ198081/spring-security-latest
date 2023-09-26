@@ -12,6 +12,8 @@
     <packaging>pom</packaging>
     <modules>
         <module>ch-02</module>
+        <module>ch-03</module>
+        <module>ch-04</module>
     </modules>
 
 
