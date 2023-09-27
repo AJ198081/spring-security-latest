@@ -21,11 +21,11 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity.httpBasic(Customizer.withDefaults())
-                           .authorizeHttpRequests(reqMatcherRegistery -> {
-                               reqMatcherRegistery.anyRequest()
-                                                  .authenticated();
-                           })
-                           .csrf(csrfCustomizer -> csrfCustomizer.ignoringRequestMatchers("/api/secure/*"))
+                           .authorizeHttpRequests(reqMatcherRegistery -> reqMatcherRegistery.anyRequest()
+                                                                                        .authenticated())
+                           .csrf(csrfCustomizer -> csrfCustomizer.ignoringRequestMatchers("/api/secure/*",
+                                                                                          "/api/method/security/*",
+                                                                                          "/api/method/security/filter/**"))
                            .build();
     }
 
