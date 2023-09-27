@@ -52,6 +52,4 @@ public class ApiKeyAuthentication implements Authentication {
     public String getName() {
         return null;
     }
-
-
 }

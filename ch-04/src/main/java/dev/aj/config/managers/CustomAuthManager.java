@@ -29,12 +29,7 @@ public class CustomAuthManager implements AuthenticationManager {
                                      .setAuthentication(authenticationObject);
                 return authenticationObject;
             }
-
         }
-
-
-
-
         return null;
     }
 }

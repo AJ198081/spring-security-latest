@@ -14,6 +14,9 @@
         <module>ch-02</module>
         <module>ch-03</module>
         <module>ch-04</module>
+        <module>ch-05</module>
+        <module>ch-06</module>
+        <module>ch-07</module>
     </modules>
 
 
@@ -30,11 +33,11 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>

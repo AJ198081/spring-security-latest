@@ -29,12 +29,10 @@ public class ApiKeyFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-
         var authentication = authenticationManager.authenticate(ApiKeyAuthentication.builder()
                                                                                     .isAuthenticated(false)
                                                                                     .apiKey(request.getHeader("Api_Key"))
                                                                                     .build());
-
 
         if (authentication.isAuthenticated()) {
             SecurityContextHolder.getContext()
@@ -43,8 +41,6 @@ public class ApiKeyFilter extends OncePerRequestFilter {
                                                                         .build());
         }
 
-
         filterChain.doFilter(request, response);
-
     }
 }

@@ -22,8 +22,5 @@ public class SecurityConfig {
                 .authorizeHttpRequests(customiser -> customiser.requestMatchers("/**").authenticated())
                            .addFilterBefore(apiKeyFilter, BasicAuthenticationFilter.class)
                            .build();
-
     }
-
-
 }
