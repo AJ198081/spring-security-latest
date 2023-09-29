@@ -42,18 +42,6 @@ import org.springframework.security.web.firewall.StrictHttpFirewall;
 @EnableWebSecurity
 public class AuthServerConfig {
 
-    private static KeyPair generateRsaKey() {
-        KeyPair keyPair;
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
-        } catch (Exception ex) {
-            throw new IllegalStateException(ex);
-        }
-        return keyPair;
-    }
-
     @Bean
     @Order(1)
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http) throws Exception {
@@ -67,10 +55,10 @@ public class AuthServerConfig {
                 // Redirect to the login page when not authenticated from the
                 // authorization endpoint
                 .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(
-                        new LoginUrlAuthenticationEntryPoint("/login")));
-        // Accept access tokens for User Info and/or Client Registration
-//                .oauth2ResourceServer((resourceServer) -> resourceServer
-//                        .jwt(Customizer.withDefaults()));
+                        new LoginUrlAuthenticationEntryPoint("/login")))
+                // Accept access tokens for User Info and/or Client Registration
+                .oauth2ResourceServer((resourceServer) -> resourceServer
+                        .jwt(Customizer.withDefaults()));
 
         return http.build();
     }
@@ -80,7 +68,7 @@ public class AuthServerConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http.authorizeHttpRequests(authorize -> authorize.anyRequest()
-                                                           .authenticated())
+                                                         .authenticated())
             .formLogin(Customizer.withDefaults());
 
         return http.build();
@@ -101,24 +89,26 @@ public class AuthServerConfig {
         return NoOpPasswordEncoder.getInstance();
     }
 
-    //http://localhost:9098/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=https://www.manning.com/authorized&code_challenge=slI6GHmAJ4Bb0ydSJRqioS6LFUc_-dD_wOifj9I51T0&code_challenge_method=S256
-    //http://localhost:9098/oauth2/token?grant_type=authorization_code&client_id=client&redirect_uri=https://www.manning.com/authorized&code=K5T13yStgXaDJLoASE6i4gBHW1w4pv_85ivRKE0UFDAgLJUpr62mH-w38pk6hUa7ClgrBtBLejroZgC9A4fzDq8UAzJykZkmMZzIfRuWqLENc4wN6Qs_XJxfahT30lQU&code_verifier=dUWsTRTw9gIq3vWL1G89F41HW2gd3Va7UvKDjgrWgy8
+    //http://localhost:9098/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=https://www.manning.com/authorized&code_challenge=_JG2Kj9B-YBUWz7ir5j0VQDOMrDQFuKbiZbYrFawSAs&code_challenge_method=S256
+    //http://localhost:9098/oauth2/token?grant_type=authorization_code&client_id=client&redirect_uri=https://www.manning.com/authorized&code=eA9m8UGNM4okp0Cq-W3fUkXKDbbDC0fJjg1ZMNS9DqbQbNexpMMqtIuOa-eGS8CLpPE75y-pLfwfVY9abL4PYkzffxIyKBmk7ybxZ07B8DSfplpPepf-NfWj9r9tUAhd&code_verifier=6hWMiuY5QnEu6A5ZJtLTwr85dalScHsUfCr08By1r7g
     @Bean // For Authorization_Code grant flow
     public RegisteredClientRepository registeredClientRepository() {
         RegisteredClient oidcClient = RegisteredClient.withId(UUID.randomUUID()
                                                                   .toString())
                                                       .clientId("client")
                                                       .clientSecret("secret")
-                                                      .clientAuthenticationMethod( //How the authorization server expects the client to authenticate when sending requests for access tokens
+                                                      .clientAuthenticationMethod(
+                                                              //How the authorization server expects the client to authenticate when sending requests for access tokens
                                                               ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
-                                                      .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE) //Grant type allowed by the authorization server for this client. A client might use multiple grant types.
-//                                                      .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
+                                                      .authorizationGrantType(
+                                                              AuthorizationGrantType.AUTHORIZATION_CODE) //Grant type allowed by the authorization server for this client. A client might use multiple grant types.
+                                                      .authorizationGrantType(AuthorizationGrantType.REFRESH_TOKEN)
                                                       .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
                                                       .redirectUri(
                                                               "https://www.manning.com/authorized")
                                                       .postLogoutRedirectUri("http://127.0.0.1:9098/")
-//                                                      .scope(OidcScopes.OPENID)
                                                       .scope(OidcScopes.OPENID)
+                                                      .scope(OidcScopes.PROFILE)
                                                       .clientSettings(ClientSettings.builder()
                                                                                     .requireAuthorizationConsent(true)
                                                                                     .requireProofKey(true)
@@ -151,7 +141,17 @@ public class AuthServerConfig {
 
     @Bean
     public JWKSource<SecurityContext> jwkSource() {
-        KeyPair keyPair = generateRsaKey();
+
+        KeyPair keyPair;
+
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            keyPair = keyPairGenerator.generateKeyPair();
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
+
         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
         RSAKey rsaKey = new RSAKey.Builder(publicKey).privateKey(privateKey)
@@ -162,7 +162,7 @@ public class AuthServerConfig {
         return new ImmutableJWKSet<>(jwkSet);
     }
 
-    //    @Bean
+    @Bean
     public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
