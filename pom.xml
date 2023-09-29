@@ -19,6 +19,8 @@
         <module>ch-07</module>
         <module>ch-11</module>
         <module>ch-10</module>
+        <module>Ch-12</module>
+        <module>ch-12-resource-server</module>
     </modules>
 
 

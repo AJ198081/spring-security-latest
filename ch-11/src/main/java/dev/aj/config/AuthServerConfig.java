@@ -54,10 +54,10 @@ public class AuthServerConfig {
         http
                 // Redirect to the login page when not authenticated from the
                 // authorization endpoint
-                .exceptionHandling((exceptions) -> exceptions.authenticationEntryPoint(
+                .exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(
                         new LoginUrlAuthenticationEntryPoint("/login")))
                 // Accept access tokens for User Info and/or Client Registration
-                .oauth2ResourceServer((resourceServer) -> resourceServer
+                .oauth2ResourceServer(resourceServer -> resourceServer
                         .jwt(Customizer.withDefaults()));
 
         return http.build();
@@ -167,7 +167,7 @@ public class AuthServerConfig {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
 
-    @Bean
+    @Bean //Required to customise the 'end-points' that your Auth Server exposes as part of OIDC's /.well-known/oidc-configuration
     public AuthorizationServerSettings authorizationServerSettings() {
         return AuthorizationServerSettings.builder()
                                           .build();
