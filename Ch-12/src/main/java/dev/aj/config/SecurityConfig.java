@@ -84,9 +84,9 @@ public class SecurityConfig {
     }
 
 
-    //http://localhost:9012/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=http://springone.com/authorized
+    //http://localhost:9012/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=https://springone.com/authorized
     //POST with clientId:ClientSecret -> http://localhost:9012/oauth2/token?grant_type=authorization_code&client_id=client&redirect_uri=https://www.springone.com/authorized&code=
-    @Bean
+//    @Bean
     RegisteredClientRepository registeredClientRepository() {
         return new InMemoryRegisteredClientRepository(RegisteredClient.withId(UUID.randomUUID()
                                                                                   .toString())
@@ -100,9 +100,9 @@ public class SecurityConfig {
                                                                               AuthorizationGrantType.CLIENT_CREDENTIALS)
                                                                       .authorizationGrantType(
                                                                               AuthorizationGrantType.REFRESH_TOKEN)
-                                                                      .redirectUri("http://springone.com/authorized")
+                                                                      .redirectUri("https://springone.com/authorized")
                                                                       .postLogoutRedirectUri(
-                                                                              "http://springone.com/loggedout")
+                                                                              "https://springone.com/loggedout")
                                                                       .scope(OidcScopes.OPENID)
                                                                       .scope(OidcScopes.PROFILE)
                                                                       .clientSettings(ClientSettings.builder()
