@@ -25,6 +25,9 @@
         <module>Ch-17</module>
         <module>Ch-17-resource-server</module>
         <module>ch-18-csrf</module>
+        <module>ch-19-cors</module>
+        <module>ch-21</module>
+        <module>ch-21-resource-server</module>
     </modules>
 
 
