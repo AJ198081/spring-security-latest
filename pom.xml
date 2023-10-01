@@ -21,6 +21,9 @@
         <module>ch-10</module>
         <module>Ch-12</module>
         <module>ch-12-resource-server</module>
+        <module>ch-16-client</module>
+        <module>Ch-17</module>
+        <module>Ch-17-resource-server</module>
     </modules>
 
 

@@ -19,7 +19,14 @@ public class SecurityConfig {
     SecurityFilterChain rsSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity.oauth2ResourceServer(
-                customizer -> customizer.jwt(jwtConfigurer -> jwtConfigurer.jwkSetUri(jwkUri)));
+                customizer -> customizer
+                        //.jwt(jwtConfigurer -> jwtConfigurer.jwkSetUri(jwkUri)) // Only one is supported at a time
+                        .opaqueToken(opaqueTokenConfigurer -> {
+                            opaqueTokenConfigurer.introspectionUri("http://localhost:9012/oauth2/introspect")
+                                                 .introspectionClientCredentials("client",
+                                                                                 "secret"); // Try getting this from DB
+                        })
+        );
 
         httpSecurity.authorizeHttpRequests(customizer -> customizer.anyRequest()
                                                                    .authenticated());
