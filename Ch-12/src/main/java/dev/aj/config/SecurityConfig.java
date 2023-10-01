@@ -70,7 +70,7 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
+//    @Bean //Commenting becuase using CustomUserDetailsService
     UserDetailsService userDetailsService() {
         return new InMemoryUserDetailsManager(User.withUsername("aj")
                                                   .password("password")
@@ -85,8 +85,8 @@ public class SecurityConfig {
 
 
     //http://localhost:9012/oauth2/authorize?response_type=code&client_id=client&scope=openid&redirect_uri=https://springone.com/authorized
-    //POST with clientId:ClientSecret -> http://localhost:9012/oauth2/token?grant_type=authorization_code&client_id=client&redirect_uri=https://www.springone.com/authorized&code=
-//    @Bean
+    //POST with clientId:ClientSecret -> http://localhost:9012/oauth2/token?grant_type=authorization_code&client_id=client&redirect_uri=https://springone.com/authorized&code=
+//    @Bean //Commenting out because using CustomClientService
     RegisteredClientRepository registeredClientRepository() {
         return new InMemoryRegisteredClientRepository(RegisteredClient.withId(UUID.randomUUID()
                                                                                   .toString())
@@ -142,8 +142,7 @@ public class SecurityConfig {
         return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
     }
 
-    @Bean
-        //Customise JWT's claims
+    @Bean //Customise JWT's claims
     OAuth2TokenCustomizer<JwtEncodingContext> oAuth2TokenCustomizer() {
         return context -> context.getClaims()
                                  .claim("token-name", "Aj's Customised Token Claim")

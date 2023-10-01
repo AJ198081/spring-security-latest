@@ -31,13 +31,15 @@ public class CustomClientService implements RegisteredClientRepository {
     @Override
     public RegisteredClient findByClientId(String clientId) {
 
-        RegisteredClient registeredClient = Client.toRegisteredClient(clientRepository.findClientByClientId(clientId)
-                                                                                      .orElseThrow(
-                                                                                              () -> new UsernameNotFoundException(
-                                                                                                      String.format(
-                                                                                                              "Unable to find client-id: %s, in database.",
-                                                                                                              clientId))));
-        return registeredClient;
+        RegisteredClient regClient = Client.toRegisteredClient(
+                clientRepository.findClientByClientId(clientId)
+                                .orElseThrow(
+                                        () -> new UsernameNotFoundException(
+                                                String.format(
+                                                        "Unable to find client-id: %s, in database.",
+                                                        clientId)))
+        );
+        return regClient;
     }
 
 }

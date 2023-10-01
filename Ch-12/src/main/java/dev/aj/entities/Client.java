@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,6 +19,9 @@ import lombok.ToString;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
+import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
+import org.springframework.security.oauth2.server.authorization.settings.OAuth2TokenFormat;
+import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 
 @Entity
 @Table(name = "client")
@@ -49,35 +53,44 @@ public class Client {
                                             .stream()
                                             .collect(Collectors.joining(",")))
                      .authMethod(registeredClient.getClientAuthenticationMethods()
-                                                  .stream()
-                                                  .map(Object::toString)
-                                                  .collect(Collectors.joining(",")))
-                     .grantType(registeredClient.getAuthorizationGrantTypes()
                                                  .stream()
                                                  .map(Object::toString)
                                                  .collect(Collectors.joining(",")))
+                     .grantType(registeredClient.getAuthorizationGrantTypes()
+                                                .stream()
+                                                .map(Object::toString)
+                                                .collect(Collectors.joining(",")))
                      .redirectUri(String.join(",", registeredClient.getRedirectUris()))
 
                      .build();
     }
 
     public static RegisteredClient toRegisteredClient(Client client) {
-        RegisteredClient registeredClient = RegisteredClient.withId(String.valueOf(client.id))
-                                                 .clientId(client.clientId)
-                                                 .clientSecret(client.secret)
-                                                 .scope(client.scope)
-                                                 .clientAuthenticationMethods(consumer -> {
-                                                     Arrays.stream(client.authMethod.split(","))
-                                                           .map(ClientAuthenticationMethod::new)
-                                                           .forEach(consumer::add);
-                                                 })
-                                                 .authorizationGrantTypes(
-                                                         consumer -> Arrays.stream(client.grantType.split(","))
-                                                                           .map(AuthorizationGrantType::new)
-                                                                           .forEach(consumer::add))
-                                                 .redirectUris(consumer -> consumer.addAll(List.of(client.redirectUri.split(","))))
-                                                 .build();
-        return registeredClient;
+        var regClient = RegisteredClient.withId(String.valueOf(client.id))
+                                        .clientId(client.clientId)
+                                        .clientSecret(client.secret)
+                                        .scope(client.scope)
+                                        .clientAuthenticationMethods(consumer -> {
+                                            Arrays.stream(client.authMethod.split(","))
+                                                  .map(ClientAuthenticationMethod::new)
+                                                  .forEach(consumer::add);
+                                        })
+                                        .authorizationGrantTypes(consumer ->
+                                                                         Arrays.stream(client.grantType.split(","))
+                                                                               .map(AuthorizationGrantType::new)
+                                                                               .forEach(consumer::add))
+                                        .redirectUris(consumer ->
+                                                              consumer.addAll(List.of(client.redirectUri.split(","))))
+                                        .clientSettings(ClientSettings.builder()
+                                                                      .requireProofKey(false)
+                                                                      .requireAuthorizationConsent(false)
+                                                                      .build())
+                                        .tokenSettings(TokenSettings.builder()
+                                                                    .accessTokenTimeToLive(Duration.ofHours(1))
+                                                                    .accessTokenFormat(OAuth2TokenFormat.REFERENCE)
+                                                                    .build())
+                                        .build();
+        return regClient;
     }
 
 
