@@ -12,14 +12,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
-        httpSecurity.oauth2ResourceServer(customizer -> {
+        //Commented out to test @WithMockUser
+        /*httpSecurity.oauth2ResourceServer(customizer -> {
             customizer.jwt(
                     jwtConfigurer -> jwtConfigurer.jwkSetUri("http://localhost:9012/jwks")
             );
-        });
+        });*/
 
         httpSecurity.authorizeHttpRequests(request -> request.anyRequest()
-                                                             .authenticated());
+                                                             .hasAuthority("read"));
 
         return httpSecurity.build();
     }
