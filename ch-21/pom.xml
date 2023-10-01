@@ -9,7 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <artifactId>ch-21</artifactId>
-    <name>Spring Boot Security</name>
+    <name>Ch-21-test</name>
     <description>Spring Boot Security Testing</description>
     <properties>
         <main.basedir>${basedir}/../..</main.basedir>

@@ -27,7 +27,7 @@
         <module>ch-18-csrf</module>
         <module>ch-19-cors</module>
         <module>ch-21</module>
-        <module>ch-21-resource-server</module>
+        <module>ch-21-testing-resource-server</module>
     </modules>
 
 
